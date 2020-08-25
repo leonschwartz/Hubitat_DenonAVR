@@ -173,7 +173,6 @@ def parse(String description) {
 	}
 
 	def refresh() {
-		log.debug "HELLO !!!!"
         def hosthex = convertIPtoHex(destIp)
 		def porthex = convertPortToHex(destPort)
 		device.deviceNetworkId = "$hosthex:$porthex" 
