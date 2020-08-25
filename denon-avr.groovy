@@ -16,6 +16,7 @@ metadata {
 	definition (name: "Denon AVR HTTP", namespace: "ScottE", 
 		author: "Scott Ellis") {
 		capability "Actuator"
+		capability "Refresh" 
 		capability "Switch" 
 		capability "Polling"
 		capability "Switch Level"
@@ -57,9 +58,11 @@ def parse(String description) {
 	def power = statusrsp.Power.value.text()
 	if(power == "ON") { 
 		sendEvent(name: "status", value: 'playing')
+		sendEvent(name: "switch", value: 'on')
 	}
 	if(power != "" && power != "ON") {  
 		sendEvent(name: "status", value: 'paused')
+		sendEvent(name: "switch", value: 'off')
 	}
 	
 	//VOLUME STATUS    
@@ -108,10 +111,12 @@ def parse(String description) {
 	}
 	def on() {
 		sendEvent(name: "status", value: 'playing')
+		sendEvent(name: "switch", value: 'on')
 		request('cmd0=PutZone_OnOff%2FON')
 	}
 	def off() { 
 		sendEvent(name: "status", value: 'paused')
+		sendEvent(name: "switch", value: 'off')
 		request('cmd0=PutZone_OnOff%2FOFF')
 	}
 	def z2on() {
@@ -168,7 +173,8 @@ def parse(String description) {
 	}
 
 	def refresh() {
-		def hosthex = convertIPtoHex(destIp)
+		log.debug "HELLO !!!!"
+        def hosthex = convertIPtoHex(destIp)
 		def porthex = convertPortToHex(destPort)
 		device.deviceNetworkId = "$hosthex:$porthex" 
 
